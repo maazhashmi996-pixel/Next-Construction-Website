@@ -11,14 +11,12 @@ import {
     CheckCircle2,
     AlertTriangle,
     Clock,
-    TrendingDown,
     PackagePlus,
     X,
     AlertCircle,
     Download,
     ShoppingBag,
     Layers,
-    DollarSign,
 } from 'lucide-react';
 
 interface MedicineItem {
@@ -42,7 +40,15 @@ export default function PharmacyStockPage() {
     const [selectedStatus, setSelectedStatus] = useState('All');
     const [activeToast, setActiveToast] = useState<string | null>(null);
 
-    const categories = ['All', 'Antibiotics', 'Analgesics', 'Cardiovascular', 'IV Fluids', 'Respiratory', 'Oncology'];
+    const categories = [
+        'All',
+        'Antibiotics',
+        'Analgesics',
+        'Cardiovascular',
+        'IV Fluids',
+        'Respiratory',
+        'Oncology',
+    ];
 
     const inventory: MedicineItem[] = [
         {
@@ -133,8 +139,10 @@ export default function PharmacyStockPage() {
                 item.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 item.batchNo.toLowerCase().includes(searchTerm.toLowerCase());
 
-            const matchesCat = selectedCategory === 'All' || item.category === selectedCategory;
-            const matchesStat = selectedStatus === 'All' || item.status === selectedStatus;
+            const matchesCat =
+                selectedCategory === 'All' || item.category === selectedCategory;
+            const matchesStat =
+                selectedStatus === 'All' || item.status === selectedStatus;
 
             return matchesSearch && matchesCat && matchesStat;
         });
@@ -149,100 +157,125 @@ export default function PharmacyStockPage() {
         <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans antialiased">
             {/* Toast Alerts */}
             {activeToast && (
-                <div className="fixed bottom-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-900 border border-emerald-500/40 text-emerald-400 shadow-2xl animate-in fade-in slide-in-from-bottom-5">
-                    <CheckCircle2 className="w-5 h-5 shrink-0" />
-                    <span className="text-xs font-semibold text-slate-200">{activeToast}</span>
-                    <button onClick={() => setActiveToast(null)} className="ml-2 text-slate-400 hover:text-white">
+                <div className="fixed bottom-5 right-5 left-5 sm:left-auto z-50 flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-slate-900 border border-emerald-500/40 text-emerald-400 shadow-2xl animate-in fade-in slide-in-from-bottom-5">
+                    <div className="flex items-center gap-3 min-w-0">
+                        <CheckCircle2 className="w-5 h-5 shrink-0" />
+                        <span className="text-xs font-semibold text-slate-200 truncate">
+                            {activeToast}
+                        </span>
+                    </div>
+                    <button
+                        onClick={() => setActiveToast(null)}
+                        className="text-slate-400 hover:text-white shrink-0 ml-2"
+                    >
                         <X className="w-4 h-4" />
                     </button>
                 </div>
             )}
 
             {/* Top Navigation Header */}
-            <header className="sticky top-0 z-20 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80 px-8 py-4 flex justify-between items-center">
-                <div className="flex items-center gap-4">
+            <header className="sticky top-0 z-20 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80 px-4 sm:px-8 py-4 flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
+                <div className="flex items-center gap-3 sm:gap-4">
                     <button
                         onClick={() => router.push('/dashboard')}
-                        className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 transition-all cursor-pointer"
+                        className="p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800 transition-all cursor-pointer shrink-0"
                     >
                         <ArrowLeft className="w-4 h-4" />
                     </button>
                     <div>
-                        <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
-                            <Pill className="w-5 h-5 text-emerald-400" />
-                            Pharmacy Inventory & Stock Control
+                        <h1 className="text-lg sm:text-xl font-bold text-white tracking-tight flex items-center gap-2">
+                            <Pill className="w-5 h-5 text-emerald-400 shrink-0" />
+                            <span>Pharmacy Inventory & Stock Control</span>
                         </h1>
-                        <p className="text-xs text-slate-400">Monitor pharmaceutical stock levels, batch expiries, and purchase orders.</p>
+                        <p className="text-xs text-slate-400 hidden sm:block">
+                            Monitor pharmaceutical stock levels, batch expiries, and purchase orders.
+                        </p>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
                     <button
                         onClick={() => showNotification('Generating Stock Audit Report PDF...')}
-                        className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white text-xs font-semibold transition-all cursor-pointer"
+                        className="flex-1 sm:flex-none justify-center flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white text-xs font-semibold transition-all cursor-pointer"
                     >
                         <Download className="w-4 h-4 text-slate-400" />
-                        Export Audit
+                        <span>Export Audit</span>
                     </button>
                     <button
                         onClick={() => showNotification('Opening Stock Entry Form...')}
-                        className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-lg shadow-emerald-600/20 transition-all cursor-pointer"
+                        className="flex-1 sm:flex-none justify-center flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-lg shadow-emerald-600/20 transition-all cursor-pointer"
                     >
                         <Plus className="w-4 h-4" />
-                        Add New Stock
+                        <span>Add Stock</span>
                     </button>
                 </div>
             </header>
 
             {/* Main Content Body */}
-            <main className="p-8 space-y-8 max-w-7xl w-full mx-auto flex-1">
+            <main className="p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 max-w-7xl w-full mx-auto flex-1">
                 {/* Metrics Summary Bar */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
-                    <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex items-center gap-4">
-                        <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+                    <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex items-center gap-4">
+                        <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-400 shrink-0">
                             <Layers className="w-6 h-6" />
                         </div>
-                        <div>
-                            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total SKUs</p>
-                            <h3 className="text-2xl font-bold text-white">1,240 Items</h3>
+                        <div className="min-w-0">
+                            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider truncate">
+                                Total SKUs
+                            </p>
+                            <h3 className="text-xl sm:text-2xl font-bold text-white truncate">
+                                1,240 Items
+                            </h3>
                         </div>
                     </div>
 
-                    <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex items-center gap-4">
-                        <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400">
+                    <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex items-center gap-4">
+                        <div className="p-3 rounded-xl bg-amber-500/10 text-amber-400 shrink-0">
                             <AlertTriangle className="w-6 h-6" />
                         </div>
-                        <div>
-                            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Low Stock Warnings</p>
-                            <h3 className="text-2xl font-bold text-amber-400">14 Reorders Needed</h3>
+                        <div className="min-w-0">
+                            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider truncate">
+                                Low Stock Warnings
+                            </p>
+                            <h3 className="text-xl sm:text-2xl font-bold text-amber-400 truncate">
+                                14 Reorders
+                            </h3>
                         </div>
                     </div>
 
-                    <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex items-center gap-4">
-                        <div className="p-3 rounded-xl bg-rose-500/10 text-rose-400">
+                    <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex items-center gap-4">
+                        <div className="p-3 rounded-xl bg-rose-500/10 text-rose-400 shrink-0">
                             <Clock className="w-6 h-6" />
                         </div>
-                        <div>
-                            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Expiring within 60 Days</p>
-                            <h3 className="text-2xl font-bold text-rose-400">8 Batches</h3>
+                        <div className="min-w-0">
+                            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider truncate">
+                                Expiring (60 Days)
+                            </p>
+                            <h3 className="text-xl sm:text-2xl font-bold text-rose-400 truncate">
+                                8 Batches
+                            </h3>
                         </div>
                     </div>
 
-                    <div className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex items-center gap-4">
-                        <div className="p-3 rounded-xl bg-blue-500/10 text-blue-400">
+                    <div className="p-4 sm:p-5 rounded-2xl bg-slate-900/60 border border-slate-800/80 flex items-center gap-4">
+                        <div className="p-3 rounded-xl bg-blue-500/10 text-blue-400 shrink-0">
                             <ShoppingBag className="w-6 h-6" />
                         </div>
-                        <div>
-                            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Today's Dispensed</p>
-                            <h3 className="text-2xl font-bold text-white">342 Prescriptions</h3>
+                        <div className="min-w-0">
+                            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider truncate">
+                                Today's Dispensed
+                            </p>
+                            <h3 className="text-xl sm:text-2xl font-bold text-white truncate">
+                                342 Scripts
+                            </h3>
                         </div>
                     </div>
                 </div>
 
                 {/* Filter & Toolbar */}
-                <div className="rounded-2xl bg-slate-900/60 border border-slate-800/80 p-5 space-y-4">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div className="relative flex-1 max-w-md">
+                <div className="rounded-2xl bg-slate-900/60 border border-slate-800/80 p-4 sm:p-5 space-y-4">
+                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                        <div className="relative w-full lg:max-w-md">
                             <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
                             <input
                                 type="text"
@@ -254,25 +287,27 @@ export default function PharmacyStockPage() {
                         </div>
 
                         {/* Status Filters */}
-                        <div className="flex items-center gap-2 bg-slate-950/80 border border-slate-800 p-1 rounded-xl">
-                            {['All', 'In Stock', 'Low Stock', 'Critical', 'Expired'].map((status) => (
-                                <button
-                                    key={status}
-                                    onClick={() => setSelectedStatus(status)}
-                                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${selectedStatus === status
-                                            ? 'bg-emerald-600 text-white shadow'
-                                            : 'text-slate-400 hover:text-slate-200'
-                                        }`}
-                                >
-                                    {status}
-                                </button>
-                            ))}
+                        <div className="flex items-center gap-1 sm:gap-2 bg-slate-950/80 border border-slate-800 p-1 rounded-xl overflow-x-auto max-w-full">
+                            {['All', 'In Stock', 'Low Stock', 'Critical', 'Expired'].map(
+                                (status) => (
+                                    <button
+                                        key={status}
+                                        onClick={() => setSelectedStatus(status)}
+                                        className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${selectedStatus === status
+                                                ? 'bg-emerald-600 text-white shadow'
+                                                : 'text-slate-400 hover:text-slate-200'
+                                            }`}
+                                    >
+                                        {status}
+                                    </button>
+                                )
+                            )}
                         </div>
                     </div>
 
                     {/* Category Filter Pills */}
-                    <div className="flex items-center gap-2 pt-2 border-t border-slate-800/60 overflow-x-auto">
-                        <span className="text-xs font-semibold text-slate-400 flex items-center gap-1.5 mr-2 shrink-0">
+                    <div className="flex items-center gap-2 pt-2 border-t border-slate-800/60 overflow-x-auto pb-1">
+                        <span className="text-xs font-semibold text-slate-400 flex items-center gap-1.5 mr-1 shrink-0">
                             <Filter className="w-3.5 h-3.5" /> Category:
                         </span>
                         {categories.map((cat) => (
@@ -290,10 +325,113 @@ export default function PharmacyStockPage() {
                     </div>
                 </div>
 
-                {/* Stock Table */}
-                <div className="rounded-2xl bg-slate-900/60 border border-slate-800/80 overflow-hidden">
+                {/* Stock List: Mobile Card View (< md) */}
+                <div className="block md:hidden space-y-3">
+                    {filteredInventory.length > 0 ? (
+                        filteredInventory.map((item) => (
+                            <div
+                                key={item.id}
+                                className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800/80 space-y-3"
+                            >
+                                <div className="flex justify-between items-start gap-2">
+                                    <div>
+                                        <h4 className="font-bold text-white text-base">
+                                            {item.tradeName}
+                                        </h4>
+                                        <p className="text-xs text-slate-400">{item.genericName}</p>
+                                    </div>
+                                    <span
+                                        className={`px-2.5 py-1 rounded-full text-[10px] font-bold inline-flex items-center gap-1 shrink-0 ${item.status === 'In Stock'
+                                                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                                : item.status === 'Low Stock'
+                                                    ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                                                    : item.status === 'Critical'
+                                                        ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20 animate-pulse'
+                                                        : 'bg-slate-800 text-slate-400 border border-slate-700'
+                                            }`}
+                                    >
+                                        ● {item.status}
+                                    </span>
+                                </div>
+
+                                <div className="grid grid-cols-2 gap-2 text-xs py-2 border-y border-slate-800/60">
+                                    <div>
+                                        <span className="text-slate-500 text-[10px] uppercase block">
+                                            Category
+                                        </span>
+                                        <span className="text-slate-300 font-medium">
+                                            {item.category}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span className="text-slate-500 text-[10px] uppercase block">
+                                            Batch No
+                                        </span>
+                                        <span className="font-mono text-slate-400">
+                                            {item.batchNo}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span className="text-slate-500 text-[10px] uppercase block">
+                                            Available / Min
+                                        </span>
+                                        <span
+                                            className={`font-bold ${item.stockQty <= item.reorderLevel
+                                                    ? 'text-amber-400'
+                                                    : 'text-white'
+                                                }`}
+                                        >
+                                            {item.stockQty} / {item.reorderLevel}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <span className="text-slate-500 text-[10px] uppercase block">
+                                            Price / Expiry
+                                        </span>
+                                        <span className="text-slate-200 font-medium">
+                                            {item.unitPrice}
+                                        </span>{' '}
+                                        <span className="text-slate-500 font-mono text-[11px]">
+                                            ({item.expiryDate})
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center justify-end gap-2 pt-1">
+                                    <button
+                                        onClick={() =>
+                                            showNotification(`Initiated Dispense for ${item.tradeName}`)
+                                        }
+                                        className="flex-1 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-all cursor-pointer text-center"
+                                    >
+                                        Dispense
+                                    </button>
+                                    <button
+                                        onClick={() =>
+                                            showNotification(
+                                                `Reorder Purchase Order issued for ${item.tradeName} to ${item.supplier}`
+                                            )
+                                        }
+                                        className="px-3 py-2 rounded-xl bg-emerald-600/10 hover:bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 flex items-center gap-1.5 text-xs font-semibold transition-all cursor-pointer"
+                                    >
+                                        <PackagePlus className="w-4 h-4" />
+                                        <span>Reorder</span>
+                                    </button>
+                                </div>
+                            </div>
+                        ))
+                    ) : (
+                        <div className="py-12 text-center text-slate-500 bg-slate-900/60 rounded-2xl border border-slate-800/80">
+                            <AlertCircle className="w-8 h-8 mx-auto mb-2 text-slate-600" />
+                            No stock items match your search criteria.
+                        </div>
+                    )}
+                </div>
+
+                {/* Stock List: Desktop Data Table (>= md) */}
+                <div className="hidden md:block rounded-2xl bg-slate-900/60 border border-slate-800/80 overflow-hidden">
                     <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse">
+                        <table className="w-full text-left border-collapse min-w-[700px]">
                             <thead>
                                 <tr className="border-b border-slate-800/80 bg-slate-950/50 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
                                     <th className="py-4 px-6">Medicine & Active Formula</th>
@@ -309,11 +447,18 @@ export default function PharmacyStockPage() {
                             <tbody className="divide-y divide-slate-800/60 text-xs text-slate-300">
                                 {filteredInventory.length > 0 ? (
                                     filteredInventory.map((item) => (
-                                        <tr key={item.id} className="hover:bg-slate-800/30 transition-all">
+                                        <tr
+                                            key={item.id}
+                                            className="hover:bg-slate-800/30 transition-all"
+                                        >
                                             <td className="py-4 px-6">
                                                 <div>
-                                                    <p className="font-bold text-white text-sm">{item.tradeName}</p>
-                                                    <p className="text-[11px] text-slate-400">{item.genericName}</p>
+                                                    <p className="font-bold text-white text-sm">
+                                                        {item.tradeName}
+                                                    </p>
+                                                    <p className="text-[11px] text-slate-400">
+                                                        {item.genericName}
+                                                    </p>
                                                 </div>
                                             </td>
                                             <td className="py-4 px-4">
@@ -321,40 +466,62 @@ export default function PharmacyStockPage() {
                                                     {item.category}
                                                 </span>
                                             </td>
-                                            <td className="py-4 px-4 font-mono text-slate-400">{item.batchNo}</td>
+                                            <td className="py-4 px-4 font-mono text-slate-400">
+                                                {item.batchNo}
+                                            </td>
                                             <td className="py-4 px-4">
                                                 <div>
-                                                    <span className={`font-bold ${item.stockQty <= item.reorderLevel ? 'text-amber-400' : 'text-white'
-                                                        }`}>
+                                                    <span
+                                                        className={`font-bold ${item.stockQty <= item.reorderLevel
+                                                                ? 'text-amber-400'
+                                                                : 'text-white'
+                                                            }`}
+                                                    >
                                                         {item.stockQty} Units
                                                     </span>
-                                                    <p className="text-[10px] text-slate-500">Min: {item.reorderLevel}</p>
+                                                    <p className="text-[10px] text-slate-500">
+                                                        Min: {item.reorderLevel}
+                                                    </p>
                                                 </div>
                                             </td>
-                                            <td className="py-4 px-4 font-semibold text-slate-200">{item.unitPrice}</td>
-                                            <td className="py-4 px-4 font-mono text-slate-400">{item.expiryDate}</td>
+                                            <td className="py-4 px-4 font-semibold text-slate-200">
+                                                {item.unitPrice}
+                                            </td>
+                                            <td className="py-4 px-4 font-mono text-slate-400">
+                                                {item.expiryDate}
+                                            </td>
                                             <td className="py-4 px-4">
-                                                <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold inline-flex items-center gap-1 ${item.status === 'In Stock'
-                                                        ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                                                        : item.status === 'Low Stock'
-                                                            ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                                                            : item.status === 'Critical'
-                                                                ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20 animate-pulse'
-                                                                : 'bg-slate-800 text-slate-400 border border-slate-700'
-                                                    }`}>
+                                                <span
+                                                    className={`px-2.5 py-1 rounded-full text-[10px] font-bold inline-flex items-center gap-1 ${item.status === 'In Stock'
+                                                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                                            : item.status === 'Low Stock'
+                                                                ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                                                                : item.status === 'Critical'
+                                                                    ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20 animate-pulse'
+                                                                    : 'bg-slate-800 text-slate-400 border border-slate-700'
+                                                        }`}
+                                                >
                                                     ● {item.status}
                                                 </span>
                                             </td>
                                             <td className="py-4 px-6 text-right">
                                                 <div className="flex items-center justify-end gap-2">
                                                     <button
-                                                        onClick={() => showNotification(`Initiated Dispense for ${item.tradeName}`)}
+                                                        onClick={() =>
+                                                            showNotification(
+                                                                `Initiated Dispense for ${item.tradeName}`
+                                                            )
+                                                        }
                                                         className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold transition-all cursor-pointer"
                                                     >
                                                         Dispense
                                                     </button>
                                                     <button
-                                                        onClick={() => showNotification(`Reorder Purchase Order issued for ${item.tradeName} to ${item.supplier}`)}
+                                                        onClick={() =>
+                                                            showNotification(
+                                                                `Reorder Purchase Order issued for ${item.tradeName} to ${item.supplier}`
+                                                            )
+                                                        }
                                                         className="p-1.5 rounded-lg bg-emerald-600/10 hover:bg-emerald-600/20 border border-emerald-500/30 text-emerald-400 transition-all cursor-pointer"
                                                         title="Create Purchase Order"
                                                     >
@@ -366,7 +533,10 @@ export default function PharmacyStockPage() {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan={8} className="py-12 text-center text-slate-500">
+                                        <td
+                                            colSpan={8}
+                                            className="py-12 text-center text-slate-500"
+                                        >
                                             <AlertCircle className="w-8 h-8 mx-auto mb-2 text-slate-600" />
                                             No stock items match your search criteria.
                                         </td>
