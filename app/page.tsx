@@ -1,69 +1,160 @@
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const [authMode, setAuthMode] = useState<'signin' | 'signup' | null>(null);
+  const router = useRouter();
+
+  const handleAuthSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    router.push('/dashboard');
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
+    <main className="relative min-h-screen flex items-center justify-center overflow-hidden font-sans">
+      <style jsx global>{`
+                @keyframes fadeInUp {
+                    from { opacity: 0; transform: translateY(24px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                @keyframes scaleIn {
+                    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+                    to { opacity: 1; transform: scale(1) translateY(0); }
+                }
+                .animate-fade-in-up { animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+                .animate-scale-in { animation: scaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+                .delay-200 { animation-delay: 200ms; }
+                .delay-400 { animation-delay: 400ms; }
+            `}</style>
+
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover -z-20"
+      >
+        <source src="/Video.mp4" type="video/mp4" />
+      </video>
+
+      <div className="absolute inset-0 bg-slate-950/50 backdrop-blur-[2px] -z-10" />
+
+      {!authMode && (
+        <div className="text-center z-10 text-white px-4 max-w-3xl">
+          <h1 className="text-6xl font-extrabold tracking-tight opacity-0 animate-fade-in-up">
+            HMIS
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="mt-6 text-xl text-slate-200 opacity-0 animate-fade-in-up delay-200">
+            Hospital Management Information System <br />
+            <span className="inline-block mt-2 font-medium text-amber-400">
+              You will get everything you need right here
+            </span>
           </p>
+          <div className="mt-10 flex items-center justify-center gap-5 opacity-0 animate-fade-in-up delay-400">
+            <button
+              onClick={() => setAuthMode('signin')}
+              className="rounded-xl bg-blue-600 px-8 py-3.5 text-white font-semibold hover:bg-blue-500 transition-all shadow-lg"
+            >
+              Sign In
+            </button>
+            <button
+              onClick={() => setAuthMode('signup')}
+              className="rounded-xl bg-white/10 backdrop-blur-md border border-white/25 px-8 py-3.5 text-white font-semibold hover:bg-white/20 transition-all shadow-lg"
+            >
+              Sign Up
+            </button>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      )}
+
+      {authMode === 'signin' && (
+        <div className="z-10 w-full max-w-md p-8 rounded-2xl bg-slate-900/80 backdrop-blur-xl border border-white/15 shadow-2xl text-white mx-4 animate-scale-in">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h2 className="text-2xl font-bold">Sign In to HMIS</h2>
+              <p className="text-xs text-slate-400 mt-1">Enter credentials to proceed to portal</p>
+            </div>
+            <button onClick={() => setAuthMode(null)} className="text-slate-400 hover:text-white">✕</button>
+          </div>
+
+          <form onSubmit={handleAuthSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1 text-slate-300">Email / Username</label>
+              <input
+                type="email"
+                placeholder="doctor@hospital.com"
+                className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/15 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1 text-slate-300">Password</label>
+              <input
+                type="password"
+                placeholder="••••••••"
+                className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/15 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-full py-3 rounded-xl bg-blue-600 font-semibold hover:bg-blue-500 transition-all mt-4"
+            >
+              Login to System
+            </button>
+          </form>
         </div>
-      </main>
-    </div>
+      )}
+
+      {authMode === 'signup' && (
+        <div className="z-10 w-full max-w-md p-8 rounded-2xl bg-slate-900/80 backdrop-blur-xl border border-white/15 shadow-2xl text-white mx-4 animate-scale-in">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <h2 className="text-2xl font-bold">Create HMIS Account</h2>
+              <p className="text-xs text-slate-400 mt-1">Create account to access system</p>
+            </div>
+            <button onClick={() => setAuthMode(null)} className="text-slate-400 hover:text-white">✕</button>
+          </div>
+
+          <form onSubmit={handleAuthSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-1 text-slate-300">Full Name</label>
+              <input
+                type="text"
+                placeholder="Dr. John Doe"
+                className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/15 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1 text-slate-300">Email Address</label>
+              <input
+                type="email"
+                placeholder="doctor@hospital.com"
+                className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/15 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1 text-slate-300">Password</label>
+              <input
+                type="password"
+                placeholder="••••••••"
+                className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/15 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-full py-3 rounded-xl bg-blue-600 font-semibold hover:bg-blue-500 transition-all mt-4"
+            >
+              Register & Enter
+            </button>
+          </form>
+        </div>
+      )}
+    </main>
   );
 }
