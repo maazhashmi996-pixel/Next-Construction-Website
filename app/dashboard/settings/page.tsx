@@ -259,7 +259,7 @@ export default function SettingsPage() {
                                                 <Sun className="w-5 h-5" />
                                             </div>
                                             <div>
-                                                <h4 className={`font-bold text-xs ${isDark && theme !== 'light' ? 'text-white' : 'text-slate-900'}`}>Light Professional</h4>
+                                                <h4 className={`font-bold text-xs ${isDark && (theme as string) === 'light' ? 'text-white' : 'text-slate-900'}`}>Light Professional</h4>
                                                 <p className="text-[11px] text-slate-500">Daytime operations</p>
                                             </div>
                                         </div>
