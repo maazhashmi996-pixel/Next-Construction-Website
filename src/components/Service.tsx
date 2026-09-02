@@ -1,10 +1,12 @@
 // src/components/Services.tsx
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 interface ServiceSlide {
     id: number;
+    slug: string;
     category: string;
     title: string;
     leftItems: string[];
@@ -15,6 +17,7 @@ interface ServiceSlide {
 const servicesData: ServiceSlide[] = [
     {
         id: 1,
+        slug: "post-construction-services",
         category: "SERVICES",
         title: "Post Construction Services",
         leftItems: [
@@ -32,6 +35,7 @@ const servicesData: ServiceSlide[] = [
     },
     {
         id: 2,
+        slug: "pre-construction-services",
         category: "SERVICES",
         title: "Pre-Construction Services",
         leftItems: [
@@ -48,6 +52,7 @@ const servicesData: ServiceSlide[] = [
     },
     {
         id: 3,
+        slug: "engineering-architecture",
         category: "SERVICES",
         title: "Engineering & Architecture",
         leftItems: [
@@ -64,6 +69,7 @@ const servicesData: ServiceSlide[] = [
     },
     {
         id: 4,
+        slug: "project-management-supervision",
         category: "SERVICES",
         title: "Project Management & Supervision",
         leftItems: [
@@ -80,6 +86,7 @@ const servicesData: ServiceSlide[] = [
     },
     {
         id: 5,
+        slug: "environmental-safety-audits",
         category: "SERVICES",
         title: "Environmental & Safety Audits",
         leftItems: [
@@ -96,6 +103,7 @@ const servicesData: ServiceSlide[] = [
     },
     {
         id: 6,
+        slug: "asset-infrastructure-management",
         category: "SERVICES",
         title: "Asset & Infrastructure Management",
         leftItems: [
@@ -112,25 +120,74 @@ const servicesData: ServiceSlide[] = [
     },
 ];
 
-export default function Services() {
+const AUTOPLAY_DURATION = 5000;
+
+function ServicesContent() {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
+    const [touchStart, setTouchStart] = useState<number | null>(null);
+    const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+    const carouselRef = useRef<HTMLDivElement>(null);
+    const searchParams = useSearchParams();
+    const serviceQuery = searchParams.get('service');
+
+    // Automatically change active slide based on Navbar link query (?service=slug)
+    useEffect(() => {
+        if (serviceQuery) {
+            const matchedIndex = servicesData.findIndex(
+                (slide) =>
+                    slide.slug === serviceQuery ||
+                    slide.id.toString() === serviceQuery ||
+                    slide.title.toLowerCase().replace(/[^a-z0-9]/g, '-').includes(serviceQuery.toLowerCase())
+            );
+            if (matchedIndex !== -1) {
+                setCurrentSlide(matchedIndex);
+            }
+        }
+    }, [serviceQuery]);
 
     const nextSlide = useCallback(() => {
         setCurrentSlide((prev) => (prev + 1) % servicesData.length);
     }, []);
 
-    const prevSlide = () => {
+    const prevSlide = useCallback(() => {
         setCurrentSlide((prev) => (prev - 1 + servicesData.length) % servicesData.length);
+    }, []);
+
+    // Keyboard controls
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'ArrowLeft') {
+            prevSlide();
+        } else if (e.key === 'ArrowRight') {
+            nextSlide();
+        }
     };
 
-    // Automatic slide transition every 1 second (1000ms)
+    // Mobile Touch/Swipe controls
+    const handleTouchStart = (e: React.TouchEvent) => {
+        setTouchEnd(null);
+        setTouchStart(e.targetTouches[0].clientX);
+    };
+
+    const handleTouchMove = (e: React.TouchEvent) => {
+        setTouchEnd(e.targetTouches[0].clientX);
+    };
+
+    const handleTouchEnd = () => {
+        if (!touchStart || !touchEnd) return;
+        const distance = touchStart - touchEnd;
+        if (distance > 50) nextSlide();
+        if (distance < -50) prevSlide();
+    };
+
+    // Auto Play Interval
     useEffect(() => {
         if (isPaused) return;
 
         const interval = setInterval(() => {
             nextSlide();
-        }, 1000);
+        }, AUTOPLAY_DURATION);
 
         return () => clearInterval(interval);
     }, [isPaused, nextSlide]);
@@ -138,17 +195,57 @@ export default function Services() {
     const activeSlide = servicesData[currentSlide];
 
     return (
-        <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <section id="services" className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 scroll-mt-24">
+            {/* Styled Header Section */}
+            <div className="flex flex-col items-start mb-8 sm:mb-12">
+                <div className="flex items-center gap-2 mb-2">
+                    <span className="w-8 h-[2px] bg-[#e0717a]" />
+                    <p className="text-[#0B2545] font-bold uppercase tracking-[0.2em] text-xs sm:text-sm">
+                        What We Offer
+                    </p>
+                </div>
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-[#0B2545]">
+                    OUR <span className="text-[#0B2545]">SERVICES</span>
+                </h2>
+                <div className="w-20 h-1.5 bg-gradient-to-r from-[#0B2545] to-[#e0717a] mt-4 rounded-full" />
+            </div>
+
+            {/* Main Carousel Container */}
             <div
-                className="relative rounded-2xl overflow-hidden min-h-[540px] flex flex-col justify-between p-8 sm:p-12 lg:p-16 text-white shadow-2xl group border border-slate-800"
+                ref={carouselRef}
+                tabIndex={0}
+                role="region"
+                aria-label="Services Carousel"
+                onKeyDown={handleKeyDown}
+                onTouchStart={handleTouchStart}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
                 onMouseEnter={() => setIsPaused(true)}
                 onMouseLeave={() => setIsPaused(false)}
+                onFocus={() => setIsPaused(true)}
+                onBlur={() => setIsPaused(false)}
+                className="relative rounded-2xl overflow-hidden min-h-[540px] flex flex-col justify-between p-8 sm:p-12 lg:p-16 text-white shadow-2xl group border border-slate-800 focus:outline-none focus:ring-2 focus:ring-[#e0717a]"
             >
-                {/* Background Image with Fast Fade Transition */}
+                {/* Animated Progress Bar */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-white/20 z-20">
+                    <div
+                        key={currentSlide + (isPaused ? '-paused' : '-active')}
+                        className={`h-full bg-[#e0717a] ${!isPaused ? 'animate-[progress_5s_linear_infinite]' : 'w-0'
+                            }`}
+                        style={{
+                            animationDuration: `${AUTOPLAY_DURATION}ms`,
+                            animationPlayState: isPaused ? 'paused' : 'running',
+                        }}
+                    />
+                </div>
+
+                {/* Background Image with Crossfade Transition */}
                 {servicesData.map((slide, index) => (
                     <div
                         key={slide.id}
-                        className={`absolute inset-0 bg-cover bg-center transition-opacity duration-500 ease-in-out ${index === currentSlide ? "opacity-100 scale-100" : "opacity-0 scale-105 pointer-events-none"
+                        className={`absolute inset-0 bg-cover bg-center transition-all duration-700 ease-in-out ${index === currentSlide
+                                ? "opacity-100 scale-100"
+                                : "opacity-0 scale-105 pointer-events-none"
                             }`}
                         style={{ backgroundImage: `url(${slide.bgImage})` }}
                     />
@@ -160,7 +257,7 @@ export default function Services() {
                 {/* Content Container */}
                 <div
                     key={activeSlide.id}
-                    className="relative z-10 max-w-4xl transition-all duration-300"
+                    className="relative z-10 max-w-4xl transition-all duration-500"
                 >
                     {/* Category Tag */}
                     <span className="text-[#e0717a] font-bold uppercase tracking-widest text-xs sm:text-sm mb-3 block">
@@ -168,9 +265,9 @@ export default function Services() {
                     </span>
 
                     {/* Title */}
-                    <h2 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-8 sm:mb-12 text-white drop-shadow-md">
+                    <h3 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight mb-8 sm:mb-12 text-white drop-shadow-md">
                         {activeSlide.title}
-                    </h2>
+                    </h3>
 
                     {/* Bullet Points Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
@@ -201,8 +298,8 @@ export default function Services() {
                 </div>
 
                 {/* Bottom Carousel Controls */}
-                <div className="relative z-10 mt-12 flex items-center justify-between">
-                    {/* Pagination Indicators (6 Dots) */}
+                <div className="relative z-10 mt-12 flex flex-wrap items-center justify-between gap-4">
+                    {/* Pagination Indicators (Dots) */}
                     <div className="flex items-center gap-2">
                         {servicesData.map((_, idx) => {
                             const isActive = currentSlide === idx;
@@ -220,8 +317,26 @@ export default function Services() {
                         })}
                     </div>
 
-                    {/* Manual Arrow Buttons */}
+                    {/* Manual Arrow & Play/Pause Controls */}
                     <div className="flex items-center gap-3">
+                        {/* Play/Pause Toggle Button */}
+                        <button
+                            onClick={() => setIsPaused((prev) => !prev)}
+                            aria-label={isPaused ? "Play Slideshow" : "Pause Slideshow"}
+                            className="w-10 h-10 rounded-full border border-white/30 bg-black/30 hover:bg-white/20 backdrop-blur-sm flex items-center justify-center text-white transition-all duration-200 active:scale-95"
+                        >
+                            {isPaused ? (
+                                <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                                    <path d="M8 5v14l11-7z" />
+                                </svg>
+                            ) : (
+                                <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                                </svg>
+                            )}
+                        </button>
+
+                        {/* Prev Button */}
                         <button
                             onClick={prevSlide}
                             aria-label="Previous Slide"
@@ -231,6 +346,8 @@ export default function Services() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
                             </svg>
                         </button>
+
+                        {/* Next Button */}
                         <button
                             onClick={nextSlide}
                             aria-label="Next Slide"
@@ -244,5 +361,13 @@ export default function Services() {
                 </div>
             </div>
         </section>
+    );
+}
+
+export default function Services() {
+    return (
+        <Suspense fallback={<div className="text-center py-12 text-slate-400">Loading Services...</div>}>
+            <ServicesContent />
+        </Suspense>
     );
 }

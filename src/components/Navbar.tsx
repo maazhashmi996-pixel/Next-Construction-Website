@@ -1,4 +1,3 @@
-// src/components/Navbar.tsx
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
@@ -12,7 +11,6 @@ export default function Navbar() {
     const [activeDropdown, setActiveDropdown] = useState<'services' | 'projects' | 'about' | 'insights' | null>(null);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
-    // Detect scroll position to adjust navbar background
     useEffect(() => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 20);
@@ -21,7 +19,6 @@ export default function Navbar() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    // Close dropdown when clicking outside
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -37,19 +34,19 @@ export default function Navbar() {
     };
 
     const servicesList = [
-        "APPRAISALS, PRE-FEASIBILITY & FEASIBILITY STUDIES",
-        "CONSTRUCTION SUPERVISION & CONTRACT MANAGEMENT",
-        "DESIGN",
-        "POST-CONSTRUCTION SERVICES",
-        "SPECIALIZED SERVICES",
-        "SURVEYS & INVESTIGATIONS",
-        "TENDER & CONTRACT DOCUMENTS",
+        { name: "APPRAISALS, PRE-FEASIBILITY & FEASIBILITY STUDIES", slug: "appraisals-pre-feasibility-feasibility-studies" },
+        { name: "CONSTRUCTION SUPERVISION & CONTRACT MANAGEMENT", slug: "construction-supervision-contract-management" },
+        { name: "DESIGN", slug: "design" },
+        { name: "POST-CONSTRUCTION SERVICES", slug: "post-construction-services" },
+        { name: "SPECIALIZED SERVICES", slug: "specialized-services" },
+        { name: "SURVEYS & INVESTIGATIONS", slug: "surveys-investigations" },
+        { name: "TENDER & CONTRACT DOCUMENTS", slug: "tender-contract-documents" },
     ];
 
     const projectsList = [
-        "OUR FLAGSHIP PROJECTS",
-        "MAJOR ONGOING PROJECTS",
-        "MAJOR COMPLETED PROJECTS",
+        { name: "OUR FLAGSHIP PROJECTS", href: "/projects" },
+        { name: "MAJOR ONGOING PROJECTS", href: "/projects" },
+        { name: "MAJOR COMPLETED PROJECTS", href: "/projects" },
     ];
 
     const aboutList = [
@@ -91,8 +88,8 @@ export default function Navbar() {
         <nav
             ref={dropdownRef}
             className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled || activeDropdown
-                ? 'bg-slate-950/95 backdrop-blur-md border-b border-white/10 shadow-2xl py-3'
-                : 'bg-gradient-to-b from-slate-950/90 via-slate-950/50 to-transparent backdrop-blur-sm py-5'
+                    ? 'bg-slate-950/95 backdrop-blur-md border-b border-white/10 shadow-2xl py-3'
+                    : 'bg-gradient-to-b from-slate-950/90 via-slate-950/50 to-transparent backdrop-blur-sm py-5'
                 }`}
         >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -111,48 +108,44 @@ export default function Navbar() {
                     {/* Floating Glassmorphism Center Links */}
                     <div className="hidden md:flex items-center gap-1 bg-slate-300/10 p-1.5 rounded-full border border-white/10 backdrop-blur-md shadow-inner">
 
-                        {/* Services Dropdown Button */}
                         <button
                             onClick={() => toggleDropdown('services')}
                             className={`flex items-center gap-1.5 px-5 py-2 rounded-full text-sm font-medium transition ${activeDropdown === 'services'
-                                ? 'bg-[#e9a803] text-white shadow-md'
-                                : 'text-slate-300 hover:text-white hover:bg-white/10'
+                                    ? 'bg-[#e9a803] text-white shadow-md'
+                                    : 'text-slate-300 hover:text-white hover:bg-white/10'
                                 }`}
                         >
                             <span>Services</span>
                             <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === 'services' ? 'rotate-180' : ''}`} />
                         </button>
 
-                        {/* Projects Dropdown Button */}
                         <button
                             onClick={() => toggleDropdown('projects')}
                             className={`flex items-center gap-1.5 px-5 py-2 rounded-full text-sm font-medium transition ${activeDropdown === 'projects'
-                                ? 'bg-[#e9a803] text-white shadow-md'
-                                : 'text-slate-300 hover:text-white hover:bg-white/10'
+                                    ? 'bg-[#e9a803] text-white shadow-md'
+                                    : 'text-slate-300 hover:text-white hover:bg-white/10'
                                 }`}
                         >
                             <span>Projects</span>
                             <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === 'projects' ? 'rotate-180' : ''}`} />
                         </button>
 
-                        {/* About Us Dropdown Button */}
                         <button
                             onClick={() => toggleDropdown('about')}
                             className={`flex items-center gap-1.5 px-5 py-2 rounded-full text-sm font-medium transition ${activeDropdown === 'about'
-                                ? 'bg-[#e9a803] text-white shadow-md'
-                                : 'text-slate-300 hover:text-white hover:bg-white/10'
+                                    ? 'bg-[#e9a803] text-white shadow-md'
+                                    : 'text-slate-300 hover:text-white hover:bg-white/10'
                                 }`}
                         >
                             <span>About Us</span>
                             <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${activeDropdown === 'about' ? 'rotate-180' : ''}`} />
                         </button>
 
-                        {/* Insights Dropdown Button */}
                         <button
                             onClick={() => toggleDropdown('insights')}
                             className={`flex items-center gap-1.5 px-5 py-2 rounded-full text-sm font-medium transition ${activeDropdown === 'insights'
-                                ? 'bg-[#e9a803] text-white shadow-md'
-                                : 'text-slate-300 hover:text-white hover:bg-white/10'
+                                    ? 'bg-[#e9a803] text-white shadow-md'
+                                    : 'text-slate-300 hover:text-white hover:bg-white/10'
                                 }`}
                         >
                             <span>Insights</span>
@@ -160,7 +153,6 @@ export default function Navbar() {
                         </button>
                     </div>
 
-                    {/* Quick Contact & Action CTA */}
                     <div className="hidden md:flex items-center gap-6">
                         <a href="tel:+123456789" className="flex items-center gap-2 text-sm text-slate-300 hover:text-brand-yellow transition font-medium">
                             <Phone className="w-4 h-4 text-brand-yellow" />
@@ -172,7 +164,6 @@ export default function Navbar() {
                         </Link>
                     </div>
 
-                    {/* Mobile Menu Trigger */}
                     <button
                         onClick={() => setIsOpen(!isOpen)}
                         className="md:hidden p-2 text-slate-300 hover:text-white rounded-lg bg-white/5 border border-white/10 backdrop-blur-md"
@@ -182,7 +173,7 @@ export default function Navbar() {
                 </div>
             </div>
 
-            {/* 1. SERVICES MEGA DROPDOWN */}
+            {/* SERVICES MEGA DROPDOWN */}
             {activeDropdown === 'services' && (
                 <div className="hidden md:block absolute top-full left-0 w-full bg-white text-slate-900 border-b-4 border-[#8b1e24] shadow-2xl transition-all duration-300 animate-fadeIn">
                     <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-12 gap-8 items-stretch">
@@ -207,11 +198,11 @@ export default function Navbar() {
                                     <li key={idx} className="flex items-center gap-3 group/item cursor-pointer">
                                         <span className="w-1.5 h-1.5 rounded-full bg-slate-900 group-hover/item:bg-[#8b1e24] transition-colors shrink-0" />
                                         <Link
-                                            href="#services"
+                                            href={`/?service=${item.slug}#services`}
                                             onClick={() => setActiveDropdown(null)}
                                             className="text-xs font-bold text-slate-800 tracking-wider group-hover/item:text-[#8b1e24] transition-colors"
                                         >
-                                            {item}
+                                            {item.name}
                                         </Link>
                                     </li>
                                 ))}
@@ -221,7 +212,7 @@ export default function Navbar() {
                 </div>
             )}
 
-            {/* 2. PROJECTS MEGA DROPDOWN */}
+            {/* PROJECTS MEGA DROPDOWN */}
             {activeDropdown === 'projects' && (
                 <div className="hidden md:block absolute top-full left-0 w-full bg-white text-slate-900 border-b-4 border-[#8b1e24] shadow-2xl transition-all duration-300 animate-fadeIn">
                     <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-12 gap-8 items-stretch">
@@ -246,11 +237,11 @@ export default function Navbar() {
                                     <li key={idx} className="flex items-center gap-3 group/item cursor-pointer">
                                         <span className="w-1.5 h-1.5 rounded-full bg-slate-900 group-hover/item:bg-[#8b1e24] transition-colors shrink-0" />
                                         <Link
-                                            href="#projects"
+                                            href={item.href}
                                             onClick={() => setActiveDropdown(null)}
                                             className="text-xs font-bold text-slate-800 tracking-wider group-hover/item:text-[#8b1e24] transition-colors"
                                         >
-                                            {item}
+                                            {item.name}
                                         </Link>
                                     </li>
                                 ))}
@@ -260,12 +251,10 @@ export default function Navbar() {
                 </div>
             )}
 
-            {/* 3. ABOUT US MEGA DROPDOWN */}
+            {/* ABOUT US MEGA DROPDOWN */}
             {activeDropdown === 'about' && (
                 <div className="hidden md:block absolute top-full left-0 w-full bg-white text-slate-900 border-b-4 border-[#8b1e24] shadow-2xl transition-all duration-300 animate-fadeIn">
                     <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-12 gap-8 items-stretch">
-
-                        {/* Left Card */}
                         <div className="col-span-4 bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between">
                             <div className="relative w-full h-48 bg-slate-900">
                                 <Image src="/about.jpg" alt="About Us" fill className="object-cover opacity-90" />
@@ -277,7 +266,6 @@ export default function Navbar() {
                             </div>
                         </div>
 
-                        {/* Right Side: 2-Column List */}
                         <div className="col-span-8 py-2 pl-4 flex flex-col justify-center">
                             <ul className="grid grid-cols-2 gap-x-8 gap-y-4">
                                 {aboutList.map((item, idx) => (
@@ -294,17 +282,14 @@ export default function Navbar() {
                                 ))}
                             </ul>
                         </div>
-
                     </div>
                 </div>
             )}
 
-            {/* 4. INSIGHTS MEGA DROPDOWN */}
+            {/* INSIGHTS MEGA DROPDOWN */}
             {activeDropdown === 'insights' && (
                 <div className="hidden md:block absolute top-full left-0 w-full bg-white text-slate-900 border-b-4 border-[#e9a803] shadow-2xl transition-all duration-300 animate-fadeIn">
                     <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-12 gap-8 items-stretch">
-
-                        {/* Left Card */}
                         <div className="col-span-4 bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between">
                             <div className="relative w-full h-48 bg-slate-900">
                                 <Image src="/Insight.jpeg" alt="Insights" fill className="object-cover opacity-90" />
@@ -316,10 +301,7 @@ export default function Navbar() {
                             </div>
                         </div>
 
-                        {/* Right Side: 3 Columns (Media & Publications, Resources, Links) */}
                         <div className="col-span-8 py-2 pl-2 grid grid-cols-3 gap-6 items-start">
-
-                            {/* Column 1: Media & Publications */}
                             <div>
                                 <div className="mb-4">
                                     <h4 className="text-xs font-bold text-[#8b1e24] tracking-widest uppercase mb-1">MEDIA & PUBLICATIONS</h4>
@@ -341,7 +323,6 @@ export default function Navbar() {
                                 </ul>
                             </div>
 
-                            {/* Column 2: Resources */}
                             <div>
                                 <div className="mb-4">
                                     <h4 className="text-xs font-bold text-[#8b1e24] tracking-widest uppercase mb-1">RESOURCES</h4>
@@ -363,7 +344,6 @@ export default function Navbar() {
                                 </ul>
                             </div>
 
-                            {/* Column 3: Links */}
                             <div>
                                 <div className="mb-4">
                                     <h4 className="text-xs font-bold text-[#8b1e24] tracking-widest uppercase mb-1">LINKS</h4>
@@ -384,9 +364,7 @@ export default function Navbar() {
                                     ))}
                                 </ul>
                             </div>
-
                         </div>
-
                     </div>
                 </div>
             )}
@@ -394,8 +372,6 @@ export default function Navbar() {
             {/* Mobile Drawer */}
             {isOpen && (
                 <div className="md:hidden bg-slate-950/95 backdrop-blur-xl border-b border-white/10 px-6 pt-4 pb-6 space-y-4 mt-3">
-
-                    {/* Mobile Services Accordion */}
                     <div>
                         <button
                             onClick={() => toggleDropdown('services')}
@@ -409,18 +385,17 @@ export default function Navbar() {
                                 {servicesList.map((item, idx) => (
                                     <Link
                                         key={idx}
-                                        href="#services"
+                                        href={`/?service=${item.slug}#services`}
                                         onClick={() => { setActiveDropdown(null); setIsOpen(false); }}
                                         className="block text-xs font-medium text-slate-400 hover:text-brand-yellow py-1"
                                     >
-                                        {item}
+                                        {item.name}
                                     </Link>
                                 ))}
                             </div>
                         )}
                     </div>
 
-                    {/* Mobile Projects Accordion */}
                     <div>
                         <button
                             onClick={() => toggleDropdown('projects')}
@@ -434,104 +409,15 @@ export default function Navbar() {
                                 {projectsList.map((item, idx) => (
                                     <Link
                                         key={idx}
-                                        href="#projects"
+                                        href={item.href}
                                         onClick={() => { setActiveDropdown(null); setIsOpen(false); }}
                                         className="block text-xs font-medium text-slate-400 hover:text-brand-yellow py-1"
                                     >
-                                        {item}
+                                        {item.name}
                                     </Link>
                                 ))}
                             </div>
                         )}
-                    </div>
-
-                    {/* Mobile About Us Accordion */}
-                    <div>
-                        <button
-                            onClick={() => toggleDropdown('about')}
-                            className="flex items-center justify-between w-full text-slate-200 hover:text-brand-yellow text-base font-medium py-1"
-                        >
-                            <span>About Us</span>
-                            <ChevronDown className={`w-4 h-4 transition-transform ${activeDropdown === 'about' ? 'rotate-180' : ''}`} />
-                        </button>
-                        {activeDropdown === 'about' && (
-                            <div className="pl-4 mt-2 space-y-2 border-l border-slate-800">
-                                {aboutList.map((item, idx) => (
-                                    <Link
-                                        key={idx}
-                                        href="#about"
-                                        onClick={() => { setActiveDropdown(null); setIsOpen(false); }}
-                                        className="block text-xs font-medium text-slate-400 hover:text-brand-yellow py-1"
-                                    >
-                                        {item}
-                                    </Link>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Mobile Insights Accordion */}
-                    <div>
-                        <button
-                            onClick={() => toggleDropdown('insights')}
-                            className="flex items-center justify-between w-full text-slate-200 hover:text-brand-yellow text-base font-medium py-1"
-                        >
-                            <span>Insights</span>
-                            <ChevronDown className={`w-4 h-4 transition-transform ${activeDropdown === 'insights' ? 'rotate-180' : ''}`} />
-                        </button>
-                        {activeDropdown === 'insights' && (
-                            <div className="pl-4 mt-2 space-y-3 border-l border-slate-800">
-                                <div>
-                                    <span className="block text-[10px] font-bold text-[#8b1e24] tracking-wider uppercase mb-1">MEDIA & PUBLICATIONS</span>
-                                    {mediaPublicationsList.map((item, idx) => (
-                                        <Link
-                                            key={idx}
-                                            href="#insights"
-                                            onClick={() => { setActiveDropdown(null); setIsOpen(false); }}
-                                            className="block text-xs font-medium text-slate-400 hover:text-brand-yellow py-0.5"
-                                        >
-                                            {item}
-                                        </Link>
-                                    ))}
-                                </div>
-                                <div>
-                                    <span className="block text-[10px] font-bold text-[#8b1e24] tracking-wider uppercase mb-1">RESOURCES</span>
-                                    {resourcesList.map((item, idx) => (
-                                        <Link
-                                            key={idx}
-                                            href="#insights"
-                                            onClick={() => { setActiveDropdown(null); setIsOpen(false); }}
-                                            className="block text-xs font-medium text-slate-400 hover:text-brand-yellow py-0.5"
-                                        >
-                                            {item}
-                                        </Link>
-                                    ))}
-                                </div>
-                                <div>
-                                    <span className="block text-[10px] font-bold text-[#8b1e24] tracking-wider uppercase mb-1">LINKS</span>
-                                    {linksList.map((item, idx) => (
-                                        <Link
-                                            key={idx}
-                                            href="#insights"
-                                            onClick={() => { setActiveDropdown(null); setIsOpen(false); }}
-                                            className="block text-xs font-medium text-slate-400 hover:text-brand-yellow py-0.5"
-                                        >
-                                            {item}
-                                        </Link>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="pt-4 border-t border-slate-800/80 space-y-3">
-                        <a href="tel:+123456789" className="flex items-center gap-2 text-sm text-slate-300">
-                            <Phone className="w-4 h-4 text-brand-yellow" />
-                            <span>+1 (555) 019-2834</span>
-                        </a>
-                        <Link href="#quote" onClick={() => setIsOpen(false)} className="block w-full text-center bg-brand-yellow text-slate-950 py-3 rounded-lg font-bold text-sm">
-                            Get Quote
-                        </Link>
                     </div>
                 </div>
             )}
